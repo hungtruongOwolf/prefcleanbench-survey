@@ -1,0 +1,62 @@
+# LoRA configuration
+lora:
+  r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  target_modules: ["q_proj", "k_proj", "v_proj", "o_proj"]
+
+# Training hyperparameters
+training:
+  per_device_train_batch_size: 4
+  gradient_accumulation_steps: 4
+  num_train_epochs: 3
+  learning_rate: 5.0e-5
+  warmup_ratio: 0.1
+  lr_scheduler_type: "cosine"
+  max_length: 1024
+  max_prompt_length: 512
+  bf16: true
+  save_strategy: "epoch"
+
+# Model
+model:
+  name: "meta-llama/Meta-Llama-3-8B"
+
+# Datasets (20K subsets)
+datasets:
+  - name: "anthropic_hh"
+    subset_size: 20000
+  - name: "ultrafeedback"
+    subset_size: 20000
+
+# Evaluation
+eval:
+  judge_model: "gpt-4o"
+  reward_model: "LxzGordon/URM-LLaMa-3.1-8B"
+  num_test_pairs: 200
+
+# Cleaning methods
+cleaning_methods:
+  all:
+    - "llm_judge_r"
+    - "llm_judge_f"
+    - "rw_gap_r_0.2"
+    - "rw_gap_f_0.2"
+    - "vote_all_r"
+    - "vote_all_f"
+    - "vote_maj_r"
+    - "vote_maj_f"
+    - "ins_tag_cmp"
+    - "ins_tag_div"
+    - "ifd_r_0.2"
+    - "ifd_gap_r_0.2"
+    - "ifd_gap_f_0.2"
+  top3:
+    - "vote_maj_r"
+    - "llm_judge_r"
+    - "ins_tag_cmp"
+
+# Optimization algorithms
+algorithms:
+  primary: "dpo"
+  cross_algo: ["dpo", "cpo", "kto", "orpo"]

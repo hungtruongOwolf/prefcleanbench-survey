@@ -1,0 +1,10 @@
+data/
+outputs/
+PrefCleanBench/
+__pycache__/
+*.pyc
+.DS_Store
+wandb/
+
+repo/models/
+repo/generations/
